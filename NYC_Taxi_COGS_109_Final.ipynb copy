@@ -16,7 +16,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 16,
+   "execution_count": 3,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -27,8 +27,7 @@
     "from sklearn.metrics import mean_squared_error\n",
     "from sklearn.linear_model import LinearRegression\n",
     "from sklearn.preprocessing import PolynomialFeatures\n",
-    "from sklearn.ensemble import RandomForestRegressor\n",
-    "from sklearn.model_selection import GridSearchCV"
+    "from sklearn.ensemble import RandomForestRegressor"
    ]
   },
   {
@@ -47,7 +46,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 17,
+   "execution_count": 4,
    "metadata": {},
    "outputs": [
     {
@@ -194,7 +193,7 @@
        "4           435  "
       ]
      },
-     "execution_count": 17,
+     "execution_count": 4,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -218,7 +217,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 18,
+   "execution_count": 5,
    "metadata": {},
    "outputs": [
     {
@@ -397,7 +396,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 23,
+   "execution_count": 6,
    "metadata": {},
    "outputs": [
     {
@@ -445,7 +444,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 38,
+   "execution_count": 7,
    "metadata": {},
    "outputs": [],
    "source": [
@@ -473,6 +472,13 @@
     "            regressor = LinearRegression()\n",
     "            regressor.fit(X_train, y_train)\n",
     "            y_pred = regressor.predict(X_test)\n",
+    "        elif(model == 'polyReg') :\n",
+    "            poly = PolynomialFeatures(degree = 3)\n",
+    "            X_poly = poly.fit_transform(X_train)\n",
+    "            poly.fit(X_poly, y_train)\n",
+    "            regressor = LinearRegression()\n",
+    "            regressor.fit(X_poly, y_train)\n",
+    "            y_pred = regressor.predict(poly.fit_transform(X_test))\n",
     "        elif (model == 'randomForest'):\n",
     "            # Fitting Random Forest to the Training set\n",
     "            regressor = RandomForestRegressor(n_estimators = 50, random_state = 0)\n",
@@ -496,6 +502,13 @@
     "            opt_regressor = LinearRegression()\n",
     "            opt_regressor.fit(X_opt_train, y_opt_train)\n",
     "            y_pred_opt = opt_regressor.predict(X_opt_test)\n",
+    "        elif(model == 'polyReg') :\n",
+    "            poly_opt = PolynomialFeatures(degree = 3)\n",
+    "            X_poly_opt = poly_opt.fit_transform(X_opt_train)\n",
+    "            poly_opt.fit(X_poly_opt, y_opt_train)\n",
+    "            regressor = LinearRegression()\n",
+    "            regressor.fit(X_poly_opt, y_opt_train)\n",
+    "            y_pred_opt = regressor.predict(poly_opt.fit_transform(X_opt_test))\n",
     "        elif (model == 'randomForest'):\n",
     "            opt_regressor = RandomForestRegressor(n_estimators = 50, random_state = 0)\n",
     "            opt_regressor.fit(X_opt_train, y_opt_train)\n",
@@ -526,15 +539,15 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 25,
+   "execution_count": 8,
    "metadata": {},
    "outputs": [
     {
      "name": "stdout",
      "output_type": "stream",
      "text": [
-      "The Linear Regression RMSE of all predictors 3086.9247716578852\n",
-      "The Linear Regression RMSE of the optimal predictors 3086.878392229106\n",
+      "The Linear Regression RMSE of all predictors 2973.2479097589953\n",
+      "The Linear Regression RMSE of the optimal predictors 2973.411083909363\n",
       "Largest value in y: 86357\n",
       "Smallest value in y: 1\n"
      ]
@@ -566,7 +579,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 26,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [
     {
@@ -607,7 +620,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 27,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [
     {
@@ -645,7 +658,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 28,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [
     {
@@ -692,9 +705,20 @@
   },
   {
    "cell_type": "code",
-   "execution_count": null,
+   "execution_count": 12,
    "metadata": {},
-   "outputs": [],
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "The Linear Regression RMSE of all train predictors in the optimal set 419.990837052146\n",
+      "The Linear Regression RMSE of the optimal test predictors in the optimal set 420.0121697676691\n",
+      "Largest value in y: 2266\n",
+      "Smallest value in y: 300\n"
+     ]
+    }
+   ],
    "source": [
     "optRMSE = custom_validation(optDataset, 'linreg', optimalX, optimalY, 10, 1)\n",
     "print('The Linear Regression RMSE of all train predictors in the optimal set', optRMSE[0])\n",
@@ -711,10 +735,30 @@
    ]
   },
   {
-   "cell_type": "code",
-   "execution_count": null,
+   "cell_type": "markdown",
    "metadata": {},
-   "outputs": [],
+   "source": [
+    "##### On a local computer, we ran through different degrees to get the most optimal. Degrees higher than 3 resulted in a runtime that was too long with the total number of observations. When we decreased the observations in an attempt to improve run times, we saw that the results were not satisfactory. We concluded that degree 3 is the most optimal so that is what we use in the function custom_validation. \n",
+    "\n",
+    "##### As we can see, this model produces even better results than the ones above even if it is a couple of seconds! "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "The Polynomial Regression RMSE of all train predictors in the optimal set 349.46830891326476\n",
+      "The Polynomail Regression RMSE of the optimal test predictors in the optimal set 349.24869547556057\n",
+      "Largest value in y: 2266\n",
+      "Smallest value in y: 300\n"
+     ]
+    }
+   ],
    "source": [
     "optRMSE = custom_validation(optDataset, 'polyReg', optimalX, optimalY, 10, 1)\n",
     "print('The Polynomial Regression RMSE of all train predictors in the optimal set', optRMSE[0])\n",
