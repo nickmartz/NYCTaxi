@@ -1,4 +1,5 @@
 # Predicting the Duration of a NYC Taxi Ride
-## COGS 108: Data Science in Practice Winter 2019 Final Project
+
+This project was aimed to predict the total ride duration of taxi trips in NYC. We implemented various models and analyzed them. Also, we analyzed two similar yet very different datasets and compared them against each other. 
 
 The actual training dataset is too large to put on github, but can be accessed from the Kaggle competition [here](https://www.kaggle.com/c/nyc-taxi-trip-duration/data).
